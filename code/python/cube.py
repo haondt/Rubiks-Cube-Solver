@@ -14,9 +14,20 @@ class Cube():
 	# D: down (bottom) side
 	# color to number converters and vice versa
 	sidenames = "FRULBD"
-	cToN = {["red", "green", "yellow", "blue","orange","white"][i]:i for i in range(6)}
-	nToC = [["red", "green", "yellow", "blue","orange","white"][i] for i in range(6)]
+	cToN = {"RGYBORW"[i]:i for i in range(6)}
+	nToC = ["RGYBORW"[i] for i in range(6)]
 	sidelen = 0
+	
+	# lists the 4 faces touching given face
+	# clockwise
+	touching = {
+		"F":"URDL",
+		"R":"UBDF",
+		"U":"BRFL",
+		"L":"UFDB",
+		"B":"ULDR",
+		"D":"FRBL"
+	}
 	def __init__(self, sidelen):
 		# initialize a solved rubiks cube
 		self.sidelen = sidelen
@@ -34,7 +45,32 @@ class Cube():
 
 	# draw (print) the FRU sides of the cube in ascii form
 	def draw(self):
-
+		# generate diagonal conversion matrix
+		# 0 1  -->   0
+		# 2 3  --> 1   2
+		#            3
+		a = [[None]*(i+1) for i in range(self.sidelen)]
+		a += [[None]*(self.sidelen-i-1) for i in range(self.sidelen-1)]
+		index = [self.sidelen-1,0]
+		currentrow = index[0]
+		for i in range(self.sidelen**2):
+			print(index[1], index[0], i)
+			a[index[0]][index[1]] = i
+			index[0] -= 1
+			if index[0] < 0:
+				currentrow += 1
+				index[0] = currentrow
+			try: 
+				if not a[index[0]][index[1]] == None:#TODO:
+					index[1] += 1
+			except IndexError:
+				index[1] -= 1
+		print(a)
+		
+		x = 0
+		y = 0
+		z = 0
+		output = ""
 		# draw top half of cube
 		for i in range(self.sidelen):
 			space = " "*((self.sidelen-i)*3) + "/"
@@ -42,83 +78,90 @@ class Cube():
 			# draw top of squares
 			# draw lines
 			if i==0:
-				print(space[:-1] + " ", end="")
+				output += space[:-1] + " "
 			else:
-				print(space, end="")
+				output += space
 			# draw top mini row
 			for j in range(self.sidelen):
 				if i == 0:
-					print("_____ ", end="")
+					output += "_____ "
 				else:
-					print("_____/", end="")
+					output += "_____/"
 			# draw bottom of corners for all but bottom one
 			if(i>0):
-				print("    \\", end="")
+				output += "    \\"
 				for j in range(1,i):
-					print("/    \\", end="")
-			print()
+					output += "/    \\"
+			output += "\n"
 			# draw top row of squares
-			print(space[1:], end="")
+			output += space[1:]
 			for j in range(self.sidelen):
-				print("     /", end="")
+				output += "     /"
 			# draw top mini corner	
-			print("\\", end="")
+			output += "\\"
 			for j in range(i):
-				print("  Y /\\",end="")
-			print()
+				output += "  %d /\\" % y
+				y += 1
+			output += "\n"
 
 			# draw middle row of squares
-			print(space[2:], end="")
+			output += space[2:]
 			for j in range(self.sidelen):
-				print("  X  /", end="")
+				output += "  %s  /" % self.sides[2][x]
+				x += 1
 			# draw 2nd top row of corners
-			print("  \\", end="")
+			output += "  \\"
 			for j in range(i):
-				print("  /  \\", end="")
-			print()
+				output += "  /  \\"
+			output += "\n"
 
 		
 		# draw center line
 		for i in range(self.sidelen):
-			print("/_____", end="")
-		print("/", end="")
+			output += "/_____"
+		output += "/"
 		# draw bottom of corners for bottom section
-		print("    \\", end="")
+		output += "    \\"
 		for i in range(1,self.sidelen):
-			print("/    \\",end="")
-		print()
+			output += "/    \\"
+		output += "\n"
 
 		# draw bottom half of cube
 		for i in range(self.sidelen):
 			space = " "*(i*3)	
 			# draw top mini row
-			print(space, end="")
+			output += space
 			for j in range(self.sidelen):
-				print("\\     ", end="")
+				output += "\\     "
 			# draw bottom of corners for all but bottom one
 			for j in range(self.sidelen-i):
-				print("\\  Y /", end="")
-			print()
+				output += "\\  %d /" % y
+				y += 1
+			output += "\n"
 
 			# draw middle mini row
-			print(space + " ",end="")
+			output += space + " "
 			for j in range(self.sidelen):
-				print("\\  Z  ", end ="")
+				output += "\\  %s  " % self.sides[0][z]
+				z += 1
 			for j in range(self.sidelen-i):
-				print("\\  /  ", end="")
-			print()
+				output += "\\  /  "
+			output += "\n"
 
 			# draw bottom row
-			print(space + "  ", end="")
+			output += space + "  "
 			for j in range(self.sidelen):
-				print("\\_____", end="")
+				output += "\\_____"
 			for j in range(self.sidelen-i):
-				print("\\/    ", end="")
-			print()
+				output += "\\/    "
+			output += "\n"
+		
+		return output
 	
 	# TODO	
 	def shuffle(self):
 		pass
-cube = Cube(3)
 
+cube = Cube(3)
+print(cube.draw())
 cube.draw()
