@@ -41,7 +41,8 @@ class Cube():
 	# face FRULBD, direction 0 for clockwise, 1 for counterclockwise
 	# TODO
 	def turn(self, face, direction):
-		pass
+		# rotate face
+		# rotate bottom row of each of touching faces
 
 	# draw (print) the FRU sides of the cube in ascii form
 	def draw(self):
@@ -49,24 +50,13 @@ class Cube():
 		# 0 1  -->   0
 		# 2 3  --> 1   2
 		#            3
-		a = [[None]*(i+1) for i in range(self.sidelen)]
-		a += [[None]*(self.sidelen-i-1) for i in range(self.sidelen-1)]
-		index = [self.sidelen-1,0]
-		currentrow = index[0]
-		for i in range(self.sidelen**2):
-			print(index[1], index[0], i)
-			a[index[0]][index[1]] = i
-			index[0] -= 1
-			if index[0] < 0:
-				currentrow += 1
-				index[0] = currentrow
-			try: 
-				if not a[index[0]][index[1]] == None:#TODO:
-					index[1] += 1
-			except IndexError:
-				index[1] -= 1
-		print(a)
-		
+		mapping = []
+		for i in range(self.sidelen):
+			for j in range(i+1):
+				mapping.append((self.sidelen*(j+1))-((i-j)+1))
+		for i in range(self.sidelen-1,0,-1):
+			for j in range(i):
+				mapping.append((self.sidelen*(self.sidelen-(i-j)))+j)
 		x = 0
 		y = 0
 		z = 0
@@ -100,7 +90,7 @@ class Cube():
 			# draw top mini corner	
 			output += "\\"
 			for j in range(i):
-				output += "  %d /\\" % y
+				output += "  %s /\\" % self.sides[1][mapping[y]]
 				y += 1
 			output += "\n"
 
@@ -135,7 +125,7 @@ class Cube():
 				output += "\\     "
 			# draw bottom of corners for all but bottom one
 			for j in range(self.sidelen-i):
-				output += "\\  %d /" % y
+				output += "\\  %s /" % self.sides[1][mapping[y]]
 				y += 1
 			output += "\n"
 

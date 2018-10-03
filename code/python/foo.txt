@@ -1,1 +1,25 @@
 2, 1, 5, 0, 4, 8, 3, 7, 6
+3, 2, 7, 1, 6, 11, 0, 5, 10, 15, 4, 9, 14, 8, 13, 12
+
+(sidelen*1)-1
+
+(sidelen*1)-2
+(sidelen*2)-1
+
+(sidelen*1)-3
+(sidelen*2)-2
+(sidelen*3)-1
+
+(sidelen*1)-4
+(sidelen*2)-3
+(sidelen*3)-2
+(sidelen*4)-1
+
+(sidelen*1)+0
+(sidelen*2)+1
+(sidelen*3)+2
+
+(sidelen*2)+0
+(sidelen*3)+1
+
+(sidelen*3)+0
