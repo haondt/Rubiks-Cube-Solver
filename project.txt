@@ -1,0 +1,4 @@
+Rubiks cube solver
+1. Download and print parts from thingiverse: https://www.thingiverse.com/thing:2471044
+2. Modify servo, camera and board mounts to fit (cheap) micro servos, a dollar store webcam and an arduino uno
+3. Assemble and extend servo wires
