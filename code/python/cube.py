@@ -1,5 +1,5 @@
 class Cube():
-	sides = 6*[None]
+	sides = {i:[None] for i in "FRULBD"}
 	# holds an array of ixi values representing the color of each square, 
 	# left to right top to bottom when looking at each face	
 	# each side is regarded with the front as the bottom
@@ -14,8 +14,8 @@ class Cube():
 	# D: down (bottom) side
 	# color to number converters and vice versa
 	sidenames = "FRULBD"
-	cToN = {"RGYBORW"[i]:i for i in range(6)}
-	nToC = ["RGYBORW"[i] for i in range(6)]
+	cToN = {"RGYBOW"[i]:i for i in range(6)}
+	nToC = ["RGYBOW"[i] for i in range(6)]
 	sidelen = 0
 	
 	# lists the 4 faces touching given face
@@ -32,10 +32,10 @@ class Cube():
 		# initialize a solved rubiks cube
 		self.sidelen = sidelen
 		for i in range(6):
-			self.sides[i] = [self.nToC[i] for j in range(sidelen**2)]
+			self.sides[self.sidenames[i]] = [self.nToC[i] for j in range(sidelen**2)]
 	def print(self):
-		for i in range(6):
-			print(self.sidenames[i], ":\n")
+		for i in self.sidenames:
+			print(i, ":\n")
 			for j in range(self.sidelen):
 				print("\t", self.sides[i][j*3:(j*3)+3])
 	# face FRULBD, direction 0 for clockwise, 1 for counterclockwise
@@ -43,7 +43,15 @@ class Cube():
 	def turn(self, face, direction):
 		# rotate face
 		# rotate bottom row of each of touching faces
-
+		# get indexes of bottom row
+		brow = self.sidelen**2-self.sidelen
+		brow = list(range(brow, brow+self.sidelen))
+		temp = [self.sides[self.touching[face][-1]][i] for i in brow]
+		for adj in self.touching[face]:
+			adj = self.sides[adj]
+			for i in range(len(brow)):
+				temp[i], adj[i] = adj[i], temp[i]
+			
 	# draw (print) the FRU sides of the cube in ascii form
 	def draw(self):
 		# generate diagonal conversion matrix
@@ -90,14 +98,14 @@ class Cube():
 			# draw top mini corner	
 			output += "\\"
 			for j in range(i):
-				output += "  %s /\\" % self.sides[1][mapping[y]]
+				output += "  %s /\\" % self.sides["R"][mapping[y]]
 				y += 1
 			output += "\n"
 
 			# draw middle row of squares
 			output += space[2:]
 			for j in range(self.sidelen):
-				output += "  %s  /" % self.sides[2][x]
+				output += "  %s  /" % self.sides["U"][x]
 				x += 1
 			# draw 2nd top row of corners
 			output += "  \\"
@@ -125,14 +133,14 @@ class Cube():
 				output += "\\     "
 			# draw bottom of corners for all but bottom one
 			for j in range(self.sidelen-i):
-				output += "\\  %s /" % self.sides[1][mapping[y]]
+				output += "\\  %s /" % self.sides["R"][mapping[y]]
 				y += 1
 			output += "\n"
 
 			# draw middle mini row
 			output += space + " "
 			for j in range(self.sidelen):
-				output += "\\  %s  " % self.sides[0][z]
+				output += "\\  %s  " % self.sides["F"][z]
 				z += 1
 			for j in range(self.sidelen-i):
 				output += "\\  /  "
@@ -154,4 +162,4 @@ class Cube():
 
 cube = Cube(3)
 print(cube.draw())
-cube.draw()
+print(cube.print())
