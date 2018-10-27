@@ -1,0 +1,33 @@
+^, <, >, v arrow points to top of face
+face indexes start from top left corner and move left to right, top to bottom
+   _
+ _|Y|_
+|B|R|G|
+  |W|
+  |O|
+   _
+ _|^|_
+|^|^|^|
+  |v|
+  |v|
+   _
+ _|U|_
+|L|F|R|
+  |D|
+  |B|
+
+
+affected rows for a given side:
+F: U bottom, R left, D bottom, L right
+R: U right, B..
+
+
+0 1 2 3
+4 5 6 7
+8 9 10 11
+12 13 14 15
+
+trow = [0,1,2,3]
+lrow = [0,4,8,12]
+rrow = [3,7,11,15]
+brow = [12,13,14,15]

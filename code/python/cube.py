@@ -18,40 +18,82 @@ class Cube():
 	nToC = ["RGYBOW"[i] for i in range(6)]
 	sidelen = 0
 	
-	# lists the 4 faces touching given face
+	# lists the 4 faces and side of face that are touching the given face
+	# side of face = (B)ottom, (L)eft, (R)ight or (T)op
 	# clockwise
 	touching = {
-		"F":"URDL",
-		"R":"UBDF",
-		"U":"BRFL",
-		"L":"UFDB",
-		"B":"ULDR",
-		"D":"FRBL"
+		"F":(("U","B"),("R","L"),("D","B"),("L","R")),
+		"R":(("U","R"),("B","L"),("D","L"),("F","R")),
+		"U":(("B","T"),("R","T"),("F","T"),("L","T")),
+		"L":(("U","L"),("F","L"),("D","R"),("B","R")),
+		"B":(("U","T"),("L","L"),("D","T"),("R","R")),
+		"D":(("F","B"),("R","B"),("B","B"),("L","B"))
 	}
+	# perhaps easier way of defining the above would be 
+	# listing the four sides that the given face touches,
+	# instead of vice-versa
 	def __init__(self, sidelen):
 		# initialize a solved rubiks cube
 		self.sidelen = sidelen
 		for i in range(6):
-			self.sides[self.sidenames[i]] = [self.nToC[i] for j in range(sidelen**2)]
+			self.sides[self.sidenames[i]] = [self.nToC[i]+str(j) for j in range(sidelen**2)]
+
 	def print(self):
+		output = ""
 		for i in self.sidenames:
-			print(i, ":\n")
+			output += i + ":\n"
 			for j in range(self.sidelen):
-				print("\t", self.sides[i][j*3:(j*3)+3])
+				output += "\t" + str(self.sides[i][j*3:(j*3)+3])
+				output += "\n"
+		return output
+	
 	# face FRULBD, direction 0 for clockwise, 1 for counterclockwise
+	# number of rows below face to turn, should be < sidelen/2 
+	# for efficiency
 	# TODO
-	def turn(self, face, direction):
+	def turn(self, face, direction, numrows):
 		# rotate face
 		# rotate bottom row of each of touching faces
 		# get indexes of bottom row
-		brow = self.sidelen**2-self.sidelen
-		brow = list(range(brow, brow+self.sidelen))
-		temp = [self.sides[self.touching[face][-1]][i] for i in brow]
-		for adj in self.touching[face]:
-			adj = self.sides[adj]
-			for i in range(len(brow)):
-				temp[i], adj[i] = adj[i], temp[i]
-			
+		print(face + ":")
+		print(self.touching[face])
+		#temp = [self.sides[self.touching[face][-1]][i] for i in brow]
+		#print(face,brow)
+		for face,side in self.touching[face]:
+			print(face, side)
+			for row in self.getRowIndexes(side, numrows):
+				
+				print([self.sides[face][i] for i in row])
+
+		for s in 'TLRB':
+			pass
+			#print(s)
+			#print(self.sides[s])
+			#print(self.getRowIndexes(s,1))
+	
+	# return an array of indexes for the given row parameters 
+	def getRowIndexes(self, side, numrows):
+		rows = []
+		
+		if side == 'T':
+			for i in range(numrows):
+				rows.append(list( \
+				range(i*self.sidelen, i*self.sidelen+self.sidelen) \
+				))
+		elif side == 'L':
+			for i in range(numrows):
+				rows.append([j*self.sidelen+i for j in range(self.sidelen)])
+		elif side == 'R':
+			for i in range(numrows):
+				rows.append([j*self.sidelen-1-i for j in range(1,self.sidelen+1)])
+		
+		elif side == 'B':
+			for i in range(numrows):
+				row = self.sidelen**2-self.sidelen*(i+1)
+				row = list(range(row, row+self.sidelen))
+				rows.append(row)
+		return rows
+
 	# draw (print) the FRU sides of the cube in ascii form
 	def draw(self):
 		# generate diagonal conversion matrix
@@ -162,4 +204,4 @@ class Cube():
 
 cube = Cube(3)
 print(cube.draw())
-print(cube.print())
+cube.turn('F',1,1)
