@@ -47,23 +47,27 @@ class Cube():
 				output += "\n"
 		return output
 	
-	# face FRULBD, direction 0 for clockwise, 1 for counterclockwise
+	# face FRULBD, direction 1 for clockwise, -1 for counterclockwise
 	# number of rows below face to turn, should be < sidelen/2 
 	# for efficiency
 	# TODO
 	def turn(self, face, direction, numrows):
 		# rotate face
+		print(self.sides[face])
+		oldface = self.sides[face].copy()
+		for i in range(self.sidelen**2):
+				self.sides[face][i] = oldface[i];
 		# rotate bottom row of each of touching faces
 		# get indexes of bottom row
 		print(face + ":")
 		print(self.touching[face])
 		#temp = [self.sides[self.touching[face][-1]][i] for i in brow]
 		#print(face,brow)
-		for face,side in self.touching[face]:
-			print(face, side)
-			for row in self.getRowIndexes(side, numrows):
-				
-				print([self.sides[face][i] for i in row])
+		#for face,side in self.touching[face]:
+		#	print(face, side)
+		#	for row in self.getRowIndexes(side, numrows):
+		#		
+		#		print([self.sides[face][i] for i in row])
 
 		for s in 'TLRB':
 			pass
@@ -202,6 +206,7 @@ class Cube():
 	def shuffle(self):
 		pass
 
-cube = Cube(3)
+cube = Cube(2)
 print(cube.draw())
 cube.turn('F',1,1)
+print(cube.draw())
